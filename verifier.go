@@ -66,7 +66,7 @@ func (v *Verifier) Verify(rawURL string) (*Result, error) {
 
 	// Check if the URL is reachable via HTTP
 	if v.httpCheckEnabled {
-		if ret.URLComponents.Scheme == "http" || ret.URLComponents.Scheme == "https" {
+		if ret.URLComponents != nil && (ret.URLComponents.Scheme == "http" || ret.URLComponents.Scheme == "https") {
 			if !v.allowHttpCheckInternal {
 				// Lookup host IP
 				host := ret.URLComponents.Hostname()

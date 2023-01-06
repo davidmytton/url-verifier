@@ -1,5 +1,9 @@
 # Change log
 
+## 0.2.1 (2023-01-06)
+
+- Fix panic on invalid URL.
+
 ## 0.2.0 (2023-01-06)
 
 - Limit HTTP reachability checks to only execute against hosts with HTTP or

@@ -279,6 +279,27 @@ func TestCheckVerify_HTTPCheckEnabledValid(t *testing.T) {
 	assert.Nil(t, err)
 }
 
+func TestCheckVerify_HTTPCheckEnabledInvalid(t *testing.T) {
+	urlToCheck := "invalid"
+
+	verifier := NewVerifier()
+	verifier.EnableHTTPCheck()
+	ret, err := verifier.Verify(urlToCheck)
+
+	expected := Result{
+		URL:           urlToCheck,
+		URLComponents: nil,
+		IsURL:         false,
+		IsRFC3986URL:  false,
+		IsRFC3986URI:  false,
+		HTTP:          nil,
+	}
+
+	assert.Equal(t, expected, *ret)
+	assert.Error(t, err)
+	assert.ErrorContains(t, err, "unable to check if the URL is reachable via HTTP: the URL does not have a HTTP or HTTPS scheme")
+}
+
 func TestCheckVerify_HTTPCheckEnabledValidUnreachable(t *testing.T) {
 	urlToCheck := "https://example.unreachable/"
 
