@@ -53,5 +53,5 @@ func TestCheckHTTP_Unreachable(t *testing.T) {
 
 	assert.Equal(t, expected, ret)
 	assert.IsType(t, &url.Error{}, err)
-	assert.ErrorContains(t, err, "dial tcp: lookup example.unreachable: no such host")
+	assert.ErrorContains(t, err, "lookup example.unreachable: no such host")
 }

@@ -5,6 +5,8 @@ package urlverifier
 
 import (
 	"errors"
+	"fmt"
+	"net"
 	"net/url"
 
 	"github.com/asaskevich/govalidator"
@@ -12,7 +14,8 @@ import (
 
 // Verifier is a URL Verifier. Create one using NewVerifier()
 type Verifier struct {
-	httpCheckEnabled bool // Whether to check if the URL is reachable via HTTP (default: false)
+	httpCheckEnabled       bool // Whether to check if the URL is reachable via HTTP (default: false)
+	allowHttpCheckInternal bool // Whether to allow HTTP checks to hosts that resolve to internal IPs (default: false)
 }
 
 // Result is the result of a URL verification
@@ -27,7 +30,7 @@ type Result struct {
 
 // NewVerifier creates a new URL Verifier
 func NewVerifier() *Verifier {
-	return &Verifier{}
+	return &Verifier{allowHttpCheckInternal: false}
 }
 
 // Verify verifies a URL. It checks if the URL is valid, parses it if so, and
@@ -64,6 +67,25 @@ func (v *Verifier) Verify(rawURL string) (*Result, error) {
 	// Check if the URL is reachable via HTTP
 	if v.httpCheckEnabled {
 		if ret.URLComponents.Scheme == "http" || ret.URLComponents.Scheme == "https" {
+			if !v.allowHttpCheckInternal {
+				// Lookup host IP
+				host := ret.URLComponents.Hostname()
+				ips, err := net.LookupIP(host)
+				if err != nil {
+					return &ret, err
+				}
+
+				// Check each IP to see if it is an internal IP
+				for _, ip := range ips {
+					if ip.IsPrivate() || ip.IsLoopback() ||
+						ip.IsLinkLocalUnicast() || ip.IsLinkLocalMulticast() ||
+						ip.IsInterfaceLocalMulticast() || ip.IsUnspecified() {
+						message := fmt.Sprintf("unable to check if the URL is reachable via HTTP: the URL %s resolves to an internal IP %s", host, ip)
+						return &ret, errors.New(message)
+					}
+				}
+			}
+
 			http, err := v.CheckHTTP(ret.URL)
 			if err != nil {
 				ret.HTTP = http
@@ -109,4 +131,14 @@ func (v *Verifier) DisableHTTPCheck() {
 // EnableHTTPCheck enables checking if the URL is reachable via HTTP
 func (v *Verifier) EnableHTTPCheck() {
 	v.httpCheckEnabled = true
+}
+
+// AllowHTTPCheckInternal allows checking internal URLs
+func (v *Verifier) AllowHTTPCheckInternal() {
+	v.allowHttpCheckInternal = true
+}
+
+// DisallowHTTPCheckInternal disallows checking internal URLs
+func (v *Verifier) DisallowHTTPCheckInternal() {
+	v.allowHttpCheckInternal = false
 }

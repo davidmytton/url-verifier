@@ -131,6 +131,34 @@ func main() {
 }
 ```
 
+## Internal HTTP checks
+
+By default, the reachability checks are only executed if the host resolves to a
+non-private IP address. An internal IP address is defined as any of:
+[private](https://pkg.go.dev/net#IP.IsPrivate),
+[loopback](https://pkg.go.dev/net#IP.IsLoopback), [link-local
+unicast](https://pkg.go.dev/net#IP.IsLinkLocalUnicast), [link-local
+multicast](https://pkg.go.dev/net#IP.IsLinkLocalMulticast), [interface-local
+multicast](https://pkg.go.dev/net#IP.IsInterfaceLocalMulticast), or
+[unspecified](https://pkg.go.dev/net#IP.IsUnspecified).
+
+This is one layer of protection against [Server Side Request
+Forgery](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html#application-layer_1)
+(SSRF) requests.
+
+To allow internal HTTP checks, call `verifier.AllowHTTPCheckInternal()`:
+
+```go
+urlToCheck := "http://localhost:3000"
+
+verifier := NewVerifier()
+verifier.EnableHTTPCheck()
+// Danger: Makes SSRF easier!
+verifier.AllowHTTPCheckInternal()
+ret, err := verifier.Verify(urlToCheck)
+...
+```
+
 ## Credits
 
 This library is heavily inspired by
