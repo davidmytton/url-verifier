@@ -12,10 +12,6 @@ type HTTP struct {
 
 // CheckHTTP checks if the URL is reachable via HTTP
 func (v *Verifier) CheckHTTP(urlToCheck string) (*HTTP, error) {
-	if !v.httpCheckEnabled {
-		return nil, nil
-	}
-
 	ret := HTTP{
 		Reachable: false,
 		IsSuccess: false,

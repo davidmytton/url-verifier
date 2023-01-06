@@ -4,6 +4,7 @@
 package urlverifier
 
 import (
+	"errors"
 	"net/url"
 
 	"github.com/asaskevich/govalidator"
@@ -61,12 +62,18 @@ func (v *Verifier) Verify(rawURL string) (*Result, error) {
 	ret.IsRFC3986URI = v.IsRequestURI(ret.URL)
 
 	// Check if the URL is reachable via HTTP
-	http, err := v.CheckHTTP(ret.URL)
-	if err != nil {
-		ret.HTTP = http
-		return &ret, err
+	if v.httpCheckEnabled {
+		if ret.URLComponents.Scheme == "http" || ret.URLComponents.Scheme == "https" {
+			http, err := v.CheckHTTP(ret.URL)
+			if err != nil {
+				ret.HTTP = http
+				return &ret, err
+			}
+			ret.HTTP = http
+		} else {
+			return &ret, errors.New("unable to check if the URL is reachable via HTTP: the URL does not have a HTTP or HTTPS scheme")
+		}
 	}
-	ret.HTTP = http
 
 	return &ret, nil
 }

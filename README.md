@@ -82,9 +82,9 @@ func main() {
 
 ### URL reachability check
 
-Call `EnableHTTPCheck()` to issue a `GET` request to the URL and check whether
-it is reachable and successfully returns a response (a success (2xx) or
-success-like code (3xx)).
+Call `EnableHTTPCheck()` to issue a `GET` request to the HTTP or HTTPS URL and
+check whether it is reachable and successfully returns a response (a success
+(2xx) or success-like code (3xx)). Non-HTTP(S) URLs will return an error.
 
 ```go
 package main

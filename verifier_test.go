@@ -251,6 +251,75 @@ func TestCheckVerify_HTTPCheckDisabledExplicit(t *testing.T) {
 	}
 }
 
+func TestCheckVerify_HTTPCheckEnabledValid(t *testing.T) {
+	urlToCheck := "https://example.com/"
+
+	verifier := NewVerifier()
+	verifier.EnableHTTPCheck()
+	ret, err := verifier.Verify(urlToCheck)
+
+	expected := Result{
+		URL:           urlToCheck,
+		URLComponents: &url.URL{Scheme: "https", Host: "example.com", Path: "/"},
+		IsURL:         true,
+		IsRFC3986URL:  true,
+		IsRFC3986URI:  true,
+		HTTP: &HTTP{
+			Reachable:  true,
+			StatusCode: 200,
+			IsSuccess:  true,
+		},
+	}
+
+	assert.Equal(t, expected, *ret)
+	assert.Nil(t, err)
+}
+
+func TestCheckVerify_HTTPCheckEnabledValidUnreachable(t *testing.T) {
+	urlToCheck := "https://example.unreachable/"
+
+	verifier := NewVerifier()
+	verifier.EnableHTTPCheck()
+	ret, err := verifier.Verify(urlToCheck)
+
+	expected := Result{
+		URL:           urlToCheck,
+		URLComponents: &url.URL{Scheme: "https", Host: "example.unreachable", Path: "/"},
+		IsURL:         true,
+		IsRFC3986URL:  true,
+		IsRFC3986URI:  true,
+		HTTP: &HTTP{
+			Reachable: false,
+			IsSuccess: false,
+		},
+	}
+
+	assert.Equal(t, expected, *ret)
+	assert.IsType(t, &url.Error{}, err)
+	assert.ErrorContains(t, err, "dial tcp: lookup example.unreachable: no such host")
+}
+
+func TestCheckVerify_HTTPCheckEnabledInvalidScheme(t *testing.T) {
+	urlToCheck := "example.com"
+
+	verifier := NewVerifier()
+	verifier.EnableHTTPCheck()
+	ret, err := verifier.Verify(urlToCheck)
+
+	expected := Result{
+		URL:           urlToCheck,
+		URLComponents: &url.URL{Scheme: "", Host: "", Path: "example.com"},
+		IsURL:         true,
+		IsRFC3986URL:  false,
+		IsRFC3986URI:  false,
+		HTTP:          nil,
+	}
+
+	assert.Equal(t, expected, *ret)
+	assert.Error(t, err)
+	assert.ErrorContains(t, err, "unable to check if the URL is reachable via HTTP: the URL does not have a HTTP or HTTPS scheme")
+}
+
 func TestIsRequestURL(t *testing.T) {
 	for _, test := range testURLs {
 		urlToCheck := test.rawURL
