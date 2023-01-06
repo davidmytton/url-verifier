@@ -3,6 +3,8 @@
 🔗 A Go library for URL validation and verification: does this URL actually
 work?
 
+[![Build Status](https://github.com/davidmytton/url-verifier/actions/workflows/go.yml/badge.svg)](https://github.com/davidmytton/url-verifier/actions)
+
 ## Features
 
 - **URL Validation:** validates whether a string is a valid URL.
