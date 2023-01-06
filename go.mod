@@ -1,4 +1,4 @@
-module github.com/davidmytton/url-urlverifier
+module github.com/davidmytton/url-verifier
 
 go 1.19
 
