@@ -131,10 +131,10 @@ func main() {
 }
 ```
 
-## Internal HTTP checks
+## HTTP checks against internal URLs
 
 By default, the reachability checks are only executed if the host resolves to a
-non-private IP address. An internal IP address is defined as any of:
+non-internal IP address. An internal IP address is defined as any of:
 [private](https://pkg.go.dev/net#IP.IsPrivate),
 [loopback](https://pkg.go.dev/net#IP.IsLoopback), [link-local
 unicast](https://pkg.go.dev/net#IP.IsLinkLocalUnicast), [link-local
