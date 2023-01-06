@@ -5,13 +5,13 @@ work?
 
 ## Features
 
-* **URL Validation:** validates whether a string is a valid URL.
-* **Different Validation Types:** validates whether the URL is valid according
+- **URL Validation:** validates whether a string is a valid URL.
+- **Different Validation Types:** validates whether the URL is valid according
   to a "human" definition of a correct URL, strict compliance with
   [RFC3986](https://www.rfc-editor.org/rfc/rfc3986) (Uniform Resource Identifier
   (URI): Generic Syntax), and/or compliance with RFC3986 with the addition of a
   schema e.g. HTTPS.
-* **Reachability:** verifies whether the URL is actually reachable via an HTTP
+- **Reachability:** verifies whether the URL is actually reachable via an HTTP
   GET request and provides the status code returned.
 
 ## Rationale
