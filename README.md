@@ -5,6 +5,7 @@ work?
 
 [![Build Status](https://github.com/davidmytton/url-verifier/actions/workflows/go.yml/badge.svg)](https://github.com/davidmytton/url-verifier/actions)
 [![codecov](https://codecov.io/gh/davidmytton/url-verifier/branch/main/graph/badge.svg?token=HXSXEHU79J)](https://codecov.io/gh/davidmytton/url-verifier)
+[![Go Report Card](https://goreportcard.com/badge/github.com/davidmytton/url-verifier)](https://goreportcard.com/report/github.com/davidmytton/url-verifier)
 
 ## Features
 
