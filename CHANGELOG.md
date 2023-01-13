@@ -1,5 +1,9 @@
 # Change log
 
+## 1.0.0 (2023-01-13)
+
+- First stable release. No changes from 0.2.1.
+
 ## 0.2.1 (2023-01-06)
 
 - Fix panic on invalid URL.
