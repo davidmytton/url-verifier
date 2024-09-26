@@ -16,6 +16,7 @@ import (
 type Verifier struct {
 	httpCheckEnabled       bool // Whether to check if the URL is reachable via HTTP (default: false)
 	allowHttpCheckInternal bool // Whether to allow HTTP checks to hosts that resolve to internal IPs (default: false)
+	skipCertVerification   bool // Whether to skip certificate verification when checking HTTP (default: false)
 }
 
 // Result is the result of a URL verification
@@ -30,7 +31,7 @@ type Result struct {
 
 // NewVerifier creates a new URL Verifier
 func NewVerifier() *Verifier {
-	return &Verifier{allowHttpCheckInternal: false}
+	return &Verifier{allowHttpCheckInternal: false, skipCertVerification: false}
 }
 
 // Verify verifies a URL. It checks if the URL is valid, parses it if so, and
@@ -141,4 +142,14 @@ func (v *Verifier) AllowHTTPCheckInternal() {
 // DisallowHTTPCheckInternal disallows checking internal URLs
 func (v *Verifier) DisallowHTTPCheckInternal() {
 	v.allowHttpCheckInternal = false
+}
+
+// AllowSkipCertVerification skips certificate verification when checking HTTPS
+func (v *Verifier) AllowSkipCertVerification() {
+	v.skipCertVerification = true
+}
+
+// DisallowSkipCertVerification does not skip certificate verification when checking HTTPS
+func (v *Verifier) DisallowSkipCertVerification() {
+	v.skipCertVerification = false
 }
