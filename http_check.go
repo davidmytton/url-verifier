@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: MIT
 package urlverifier
 
-import "net/http"
+import (
+	"crypto/tls"
+	"net/http"
+)
 
 // HTTP is the result of a HTTP check
 type HTTP struct {
@@ -17,8 +20,19 @@ func (v *Verifier) CheckHTTP(urlToCheck string) (*HTTP, error) {
 		IsSuccess: false,
 	}
 
+	// Create client for skipping certificate verification
+	var client http.Client
+
+	if v.skipCertVerification {
+		client = http.Client{
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			},
+		}
+	}
+
 	// Check if the URL is reachable via HTTP
-	resp, err := http.Get(urlToCheck)
+	resp, err := client.Get(urlToCheck)
 	if err != nil {
 		return &ret, err
 	}
