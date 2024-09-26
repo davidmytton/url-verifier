@@ -161,6 +161,21 @@ ret, err := verifier.Verify(urlToCheck)
 ...
 ```
 
+## Skip HTTPS certificate verification
+
+By default, the library will verify the HTTPS certificate of the URL. To skip the verification, call `verifier.SkipHTTPSCertificateVerification()`:
+
+```go
+urlToCheck := "https://example.com"
+
+verifier := NewVerifier()
+verifier.EnableHTTPCheck()
+// Danger: Makes SSRF easier!
+verifier.AllowSkipCertVerification()
+ret, err := verifier.Verify(urlToCheck)
+...
+```
+
 ## Credits
 
 This library is heavily inspired by
