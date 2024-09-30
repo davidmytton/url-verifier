@@ -55,3 +55,36 @@ func TestCheckHTTP_Unreachable(t *testing.T) {
 	assert.IsType(t, &url.Error{}, err)
 	assert.ErrorContains(t, err, "lookup example.unreachable: no such host")
 }
+
+func TestCheckHTTP_expiredCert(t *testing.T) {
+	urlToCheck := "https://self-signed.badssl.com/"
+
+	verifier := NewVerifier()
+	ret, err := verifier.CheckHTTP(urlToCheck)
+
+	expected := &HTTP{
+		Reachable: false,
+		IsSuccess: false,
+	}
+
+	assert.Equal(t, expected, ret)
+	assert.IsType(t, &url.Error{}, err)
+	assert.ErrorContains(t, err, "failed to verify certificate")
+}
+
+func TestCheckHTTP_expiredCert_allowSkip(t *testing.T) {
+	urlToCheck := "https://self-signed.badssl.com/"
+
+	verifier := NewVerifier()
+	verifier.AllowSkipCertVerification()
+	ret, err := verifier.CheckHTTP(urlToCheck)
+
+	expected := &HTTP{
+		Reachable:  true,
+		StatusCode: 200,
+		IsSuccess:  true,
+	}
+
+	assert.Equal(t, expected, ret)
+	assert.Nil(t, err)
+}
