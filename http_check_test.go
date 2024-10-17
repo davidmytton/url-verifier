@@ -69,7 +69,7 @@ func TestCheckHTTP_expiredCert(t *testing.T) {
 
 	assert.Equal(t, expected, ret)
 	assert.IsType(t, &url.Error{}, err)
-	assert.ErrorContains(t, err, "failed to verify certificate")
+	assert.ErrorContains(t, err, "x509:")
 }
 
 func TestCheckHTTP_expiredCert_allowSkip(t *testing.T) {
